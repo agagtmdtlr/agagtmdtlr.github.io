@@ -7,62 +7,7 @@
 export default class BlogApp {
     constructor() {
         // 샘플 포스트 데이터 (최초 로드용)
-        this.posts = [
-            {
-                id: 1,
-                title: "노란귤 블로그에 오신 것을 환영합니다",
-                excerpt: "깃허브 블로그 디자인 및 기능 설정을 소개합니다. 미니멀리즘과 노란색 테마로 산뜻한 느낌을 제공합니다.",
-                content: `# 환영합니다!
-노란귤 블로그는 다음과 같은 스택으로 구성되어 있습니다:
-1. **HTML5 & CSS3**: 라이브러리 없는 순수 스타일링
-2. **Vanilla JS**: 깔끔하고 가벼운 동작
-
-## 테마 컨셉
-우리는 4가지의 엄선된 제한 컬러를 사용하여 일관성 있고 아름다운 디자인을 지향합니다.
-* **Sun Yellow**: \`#ffce00\` (강조색)
-* **Dark Slate**: \`#0f172a\` (텍스트)
-* **Pure White**: \`#ffffff\` (배경)
-* **Cool Gray**: \`#e2e8f0\` (테두리 및 라인)
-
-마크다운 양식으로 글을 편하게 작성하고, 로컬 환경에서 글쓰기 폼을 통해 마크다운 파일을 손쉽게 내려받을 수 있습니다.`,
-                category: "General",
-                tags: ["Welcome", "Guide"],
-                date: "2026-06-14",
-                readtime: "2 min read"
-            },
-            {
-                id: 2,
-                title: "마크다운(Markdown) 사용법 및 스타일 가이드",
-                excerpt: "블로그 글 작성 시 사용할 수 있는 마크다운 문법과 본문 렌더링 스타일 예시입니다.",
-                content: `# 마크다운 렌더링 데모
-
-본문 영역에서 마크다운 요소들이 어떻게 스타일링되는지 확인하세요.
-
-## 1. 코드 블록
-개발 블로그 필수 요소인 코드 블록입니다:
-\`\`\`javascript
-const greeting = "Hello, World!";
-console.log(greeting);
-\`\`\`
-
-인라인 코드 표시 예시: \`const isLocal = true;\` 처럼 강조할 수 있습니다.
-
-## 2. 인용구 (Blockquote)
-> "창조적인 일은 정돈된 환경에서 나오며, 세련됨은 단순함에서 시작된다." - 미니멀리스트 격언
-
-## 3. 리스트
-- 순서 없는 첫 번째 항목
-- 두 번째 항목
-  - 하위 레벨 항목
-
-1. 순서 있는 항목
-2. 다음 항목`,
-                category: "Guide",
-                tags: ["Markdown", "Style"],
-                date: "2026-06-13",
-                readtime: "4 min read"
-            }
-        ];
+        this.posts = [];
 
         this.currentCategory = "All";
         this.searchQuery = "";
@@ -99,6 +44,118 @@ console.log(greeting);
     }
 
     /**
+     * posts.json 파일 및 개별 마크다운 파일 로드
+     */
+    async loadPosts() {
+        try {
+            // posts.json에서 마크다운 파일 목록 조회
+            const response = await fetch('./posts.json');
+            if (!response.ok) {
+                throw new Error('posts.json을 불러올 수 없습니다.');
+            }
+            const postFiles = await response.json();
+            
+            const loadedPosts = [];
+            for (const file of postFiles) {
+                try {
+                    const postRes = await fetch(`./_posts/${file}`);
+                    if (!postRes.ok) {
+                        console.error(`포스트 파일을 읽을 수 없습니다: ${file}`);
+                        continue;
+                    }
+                    const mdText = await postRes.text();
+                    const parsed = this.parseFrontMatter(mdText);
+                    if (parsed) {
+                        loadedPosts.push({
+                            id: parsed.frontMatter.id,
+                            title: parsed.frontMatter.title,
+                            excerpt: parsed.frontMatter.excerpt,
+                            content: parsed.content,
+                            category: parsed.frontMatter.category,
+                            tags: parsed.frontMatter.tags || [],
+                            date: parsed.frontMatter.date,
+                            updated: parsed.frontMatter.updated || parsed.frontMatter.date,
+                            readtime: parsed.frontMatter.readtime || "2 min read"
+                        });
+                    }
+                } catch (err) {
+                    console.error(`포스트 파일 처리 실패 (${file}):`, err);
+                }
+            }
+            this.posts = loadedPosts;
+        } catch (error) {
+            console.error('포스트 데이터 로딩 실패:', error);
+            this.posts = [];
+        }
+    }
+
+    /**
+     * 마크다운 YAML Front Matter 파서
+     */
+    parseFrontMatter(mdString) {
+        if (!mdString) return null;
+        const normalized = mdString.replace(/\r\n/g, '\n');
+        const lines = normalized.split('\n');
+        
+        let frontMatter = {};
+        let contentLines = [];
+        let inFrontMatter = false;
+        let dividerCount = 0;
+
+        for (let line of lines) {
+            if (line.trim() === '---') {
+                dividerCount++;
+                if (dividerCount === 1) {
+                    inFrontMatter = true;
+                    continue;
+                } else if (dividerCount === 2) {
+                    inFrontMatter = false;
+                    continue;
+                }
+            }
+
+            if (inFrontMatter) {
+                const colonIdx = line.indexOf(':');
+                if (colonIdx !== -1) {
+                    const key = line.substring(0, colonIdx).trim();
+                    let val = line.substring(colonIdx + 1).trim();
+
+                    // 큰따옴표/작은따옴표 제거
+                    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                        val = val.substring(1, val.length - 1);
+                    }
+
+                    // 배열 파싱 (예: ["Welcome", "Guide"] 또는 ['Welcome', 'Guide'])
+                    if (val.startsWith('[') && val.endsWith(']')) {
+                        const arrayContent = val.substring(1, val.length - 1);
+                        val = arrayContent ? arrayContent.split(',').map(item => {
+                            let cleanItem = item.trim();
+                            if ((cleanItem.startsWith('"') && cleanItem.endsWith('"')) || (cleanItem.startsWith("'") && cleanItem.endsWith("'"))) {
+                                cleanItem = cleanItem.substring(1, cleanItem.length - 1);
+                            }
+                            return cleanItem;
+                        }) : [];
+                    }
+
+                    // id를 숫자로 변환
+                    if (key === 'id') {
+                        val = parseInt(val, 10);
+                    }
+
+                    frontMatter[key] = val;
+                }
+            } else {
+                contentLines.push(line);
+            }
+        }
+
+        return {
+            frontMatter,
+            content: contentLines.join('\n').trim()
+        };
+    }
+
+    /**
      * 로컬 환경 판별
      * - localhost, 127.0.0.1, file:// 일 경우 true 반환
      */
@@ -114,7 +171,8 @@ console.log(greeting);
     /**
      * 초기 실행 메서드
      */
-    init() {
+    async init() {
+        await this.loadPosts();
         this.setupEnvironment();
         this.renderCategories();
         this.renderRecentPostsWidget();
@@ -465,6 +523,7 @@ console.log(greeting);
             category,
             tags,
             date: new Date().toISOString().split('T')[0],
+            updated: new Date().toISOString().split('T')[0],
             readtime: `${Math.ceil(content.length / 500)} min read`
         };
 
@@ -493,12 +552,14 @@ console.log(greeting);
 
         const tags = tagsRaw ? tagsRaw.split(",").map(t => t.trim()) : [];
         const date = new Date().toISOString().split('T')[0];
+        const updated = date;
         const excerpt = content.substring(0, 150).replace(/\n/g, " ").trim() + "...";
 
         // Jekyll / Static Site Generator 친화적인 Front Matter 생성
         const markdownContent = `---
 title: "${title}"
 date: "${date}"
+updated: "${updated}"
 category: "${category}"
 tags: [${tags.map(t => `"${t}"`).join(", ")}]
 excerpt: "${excerpt}"
