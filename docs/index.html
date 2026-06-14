@@ -22,9 +22,6 @@
                 <span class="search-icon">🔍</span>
                 <input type="text" id="search-input" class="search-input" placeholder="게시글 검색...">
             </div>
-            <button class="btn-write" id="btn-write-post">
-                <span>✍️</span> 글쓰기
-            </button>
         </div>
     </nav>
 
@@ -98,36 +95,6 @@
                 </article>
             </section>
 
-            <!-- 3. 게시글 작성 뷰 (에디터) -->
-            <section id="view-editor" class="editor-container" style="display: none;">
-                <input type="text" id="editor-title" class="editor-title-input" placeholder="제목을 입력하세요..." required>
-
-                <div class="editor-meta-grid">
-                    <div class="editor-field">
-                        <label for="editor-category">Category</label>
-                        <input type="text" id="editor-category" class="editor-input"
-                            placeholder="예: Guide, General (기본값: General)">
-                    </div>
-                    <div class="editor-field">
-                        <label for="editor-tags">Tags (쉼표로 구분)</label>
-                        <input type="text" id="editor-tags" class="editor-input" placeholder="예: Markdown, CSS, Tech">
-                    </div>
-                </div>
-
-                <div class="editor-layout">
-                    <div class="editor-field">
-                        <label for="editor-textarea">Content (Markdown)</label>
-                        <textarea id="editor-textarea" class="editor-textarea"
-                            placeholder="마크다운 문법으로 글을 작성해 주세요..."></textarea>
-                    </div>
-                </div>
-
-                <div class="editor-actions">
-                    <button class="btn-cancel" id="btn-cancel-write">취소</button>
-                    <button class="btn-download" id="btn-download-md" title="작성한 글을 .md 파일로 다운로드합니다">MD 다운로드</button>
-                    <button class="btn-submit" id="btn-save-post">발행하기</button>
-                </div>
-            </section>
         </main>
 
         <!-- 우측 사이드바: 목차(TOC) 및 보조 위젯 -->

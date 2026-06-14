@@ -13,10 +13,8 @@ export default class BlogApp {
         this.searchQuery = "";
 
         // DOM 요소 캐싱
-        this.btnWrite = document.getElementById("btn-write-post");
         this.viewList = document.getElementById("view-list");
         this.viewDetail = document.getElementById("view-detail");
-        this.viewEditor = document.getElementById("view-editor");
         
         // 상세 페이지 요소
         this.btnBack = document.getElementById("btn-back-to-list");
@@ -25,15 +23,6 @@ export default class BlogApp {
         this.detailDate = document.getElementById("detail-date");
         this.detailReadtime = document.getElementById("detail-readtime");
         this.detailContent = document.getElementById("detail-content");
-
-        // 에디터 요소
-        this.editorTitle = document.getElementById("editor-title");
-        this.editorCategory = document.getElementById("editor-category");
-        this.editorTags = document.getElementById("editor-tags");
-        this.editorTextarea = document.getElementById("editor-textarea");
-        this.btnCancelWrite = document.getElementById("btn-cancel-write");
-        this.btnDownloadMd = document.getElementById("btn-download-md");
-        this.btnSavePost = document.getElementById("btn-save-post");
 
         // 사이드바 및 레이아웃 요소
         this.categoryList = document.getElementById("category-list");
@@ -156,42 +145,14 @@ export default class BlogApp {
     }
 
     /**
-     * 로컬 환경 판별
-     * - localhost, 127.0.0.1, file:// 일 경우 true 반환
-     */
-    checkIsLocal() {
-        const hostname = window.location.hostname;
-        const protocol = window.location.protocol;
-        return hostname === "localhost" || 
-               hostname === "127.0.0.1" || 
-               hostname === "" || // file:// 프로토콜인 경우 종종 hostname이 빈 문자열임
-               protocol === "file:";
-    }
-
-    /**
      * 초기 실행 메서드
      */
     async init() {
         await this.loadPosts();
-        this.setupEnvironment();
         this.renderCategories();
         this.renderRecentPostsWidget();
         this.renderPostList();
         this.bindEvents();
-    }
-
-    /**
-     * 환경 설정 (로컬 환경 여부에 따른 처리)
-     */
-    setupEnvironment() {
-        const isLocal = this.checkIsLocal();
-        if (this.btnWrite) {
-            if (isLocal) {
-                this.btnWrite.style.display = "flex";
-            } else {
-                this.btnWrite.style.display = "none";
-            }
-        }
     }
 
     /**
@@ -203,29 +164,9 @@ export default class BlogApp {
             this.logo.addEventListener("click", () => this.switchView("list"));
         }
 
-        // 글쓰기 버튼 클릭
-        if (this.btnWrite) {
-            this.btnWrite.addEventListener("click", () => this.switchView("editor"));
-        }
-
         // 목록으로 가기 버튼 클릭
         if (this.btnBack) {
             this.btnBack.addEventListener("click", () => this.switchView("list"));
-        }
-
-        // 에디터 취소 버튼 클릭
-        if (this.btnCancelWrite) {
-            this.btnCancelWrite.addEventListener("click", () => this.switchView("list"));
-        }
-
-        // 에디터 발행 버튼 클릭 (로컬 저장소 추가 시연 및 뷰 전환)
-        if (this.btnSavePost) {
-            this.btnSavePost.addEventListener("click", () => this.savePostLocally());
-        }
-
-        // 에디터 마크다운 다운로드 버튼 클릭
-        if (this.btnDownloadMd) {
-            this.btnDownloadMd.addEventListener("click", () => this.downloadMarkdownFile());
         }
 
         // 검색어 입력 이벤트
@@ -244,7 +185,6 @@ export default class BlogApp {
         // 기본 뷰 숨김
         this.viewList.style.display = "none";
         this.viewDetail.style.display = "none";
-        this.viewEditor.style.display = "none";
 
         if (viewName === "list") {
             this.viewList.style.display = "flex";
@@ -253,22 +193,7 @@ export default class BlogApp {
         } else if (viewName === "detail") {
             this.viewDetail.style.display = "block";
             window.scrollTo({ top: 0, behavior: "smooth" });
-        } else if (viewName === "editor") {
-            this.viewEditor.style.display = "block";
-            this.clearEditorForm();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            this.clearTOC();
         }
-    }
-
-    /**
-     * 에디터 폼 지우기
-     */
-    clearEditorForm() {
-        this.editorTitle.value = "";
-        this.editorCategory.value = "";
-        this.editorTags.value = "";
-        this.editorTextarea.value = "";
     }
 
     /**
@@ -497,92 +422,5 @@ export default class BlogApp {
         }
     }
 
-    /**
-     * 포스트 로컬 임시 저장 및 목록 추가 (프론트엔드 상태 유지 데모)
-     */
-    savePostLocally() {
-        const title = this.editorTitle.value.trim();
-        const category = this.editorCategory.value.trim() || "General";
-        const tagsRaw = this.editorTags.value.trim();
-        const content = this.editorTextarea.value;
 
-        if (!title || !content) {
-            alert("제목과 본문을 입력해 주세요.");
-            return;
-        }
-
-        const tags = tagsRaw ? tagsRaw.split(",").map(t => t.trim()) : [];
-        const excerpt = content.length > 150 ? content.substring(0, 150) + "..." : content;
-
-        // 새 임시 포스트 생성
-        const newPost = {
-            id: Date.now(),
-            title,
-            excerpt,
-            content,
-            category,
-            tags,
-            date: new Date().toISOString().split('T')[0],
-            updated: new Date().toISOString().split('T')[0],
-            readtime: `${Math.ceil(content.length / 500)} min read`
-        };
-
-        this.posts.push(newPost);
-        
-        // 카테고리 갱신 및 사이드바 목록 갱신
-        this.renderCategories();
-        this.renderRecentPostsWidget();
-        this.switchView("list");
-        alert("게시글이 목록에 추가되었습니다. (임시 동적 반영)");
-    }
-
-    /**
-     * 마크다운 파일로 다운로드
-     */
-    downloadMarkdownFile() {
-        const title = this.editorTitle.value.trim();
-        const category = this.editorCategory.value.trim() || "General";
-        const tagsRaw = this.editorTags.value.trim();
-        const content = this.editorTextarea.value;
-
-        if (!title || !content) {
-            alert("제목과 본문을 입력해 주세요.");
-            return;
-        }
-
-        const tags = tagsRaw ? tagsRaw.split(",").map(t => t.trim()) : [];
-        const date = new Date().toISOString().split('T')[0];
-        const updated = date;
-        const excerpt = content.substring(0, 150).replace(/\n/g, " ").trim() + "...";
-
-        // Jekyll / Static Site Generator 친화적인 Front Matter 생성
-        const markdownContent = `---
-title: "${title}"
-date: "${date}"
-updated: "${updated}"
-category: "${category}"
-tags: [${tags.map(t => `"${t}"`).join(", ")}]
-excerpt: "${excerpt}"
----
-
-${content}
-`;
-
-        // 파일명 생성 (예: 2026-06-15-my-first-post.md)
-        const formattedTitle = title
-            .toLowerCase()
-            .replace(/[^a-z0-9가-힣\s-]/g, "")
-            .replace(/\s+/g, "-");
-        const filename = `${date}-${formattedTitle}.md`;
-
-        // 다운로드 실행
-        const blob = new Blob([markdownContent], { type: "text/markdown;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
 }
