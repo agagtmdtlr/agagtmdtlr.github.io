@@ -2,12 +2,11 @@
 
 :root {
     --primary: #ffce00;
-    --primary-hover: #e6b800;
     --primary-light: rgba(255, 206, 0, 0.15);
     --bg-main: #ffffff;
-    --bg-alt: #f8fafc;
+    --bg-alt: rgba(15, 23, 42, 0.03);
     --text-primary: #0f172a;
-    --text-secondary: #64748b;
+    --text-secondary: rgba(15, 23, 42, 0.6);
     --border-color: #e2e8f0;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
@@ -100,7 +99,7 @@ a {
 }
 
 .search-input:focus {
-    border-color: var(--primary-hover);
+    border-color: var(--primary);
     background-color: var(--bg-main);
     box-shadow: 0 0 0 3px var(--primary-light);
 }
@@ -132,7 +131,8 @@ a {
 }
 
 .btn-write:hover {
-    background-color: var(--primary-hover);
+    background-color: var(--primary);
+    filter: brightness(0.95);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -434,7 +434,7 @@ a {
 }
 
 .post-card:hover .post-readmore {
-    color: var(--primary-hover);
+    color: var(--primary);
 }
 
 /* Post Detail View */
@@ -708,7 +708,8 @@ a {
 }
 
 .btn-submit:hover {
-    background-color: var(--primary-hover);
+    background-color: var(--primary);
+    filter: brightness(0.95);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -832,7 +833,7 @@ a {
 }
 
 .widget-post-title:hover {
-    color: var(--primary-hover);
+    color: var(--primary);
 }
 
 .widget-post-date {

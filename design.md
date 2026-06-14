@@ -11,17 +11,17 @@
 
 ## 2. 컬러 팔레트 (Color Palette)
 
-블로그 전반에 사용된 색상 체계는 다음과 같습니다.
+블로그 전반에 사용된 색상 체계는 다음 **4가지 핵심 색상**으로 제한됩니다. 이외의 변종 색상은 CSS의 불투명도(Opacity, rgba) 및 필터(brightness) 효과를 사용하여 파생됩니다.
 
-| 역할 | 색상 이름 | Hex 코드 | 설명 |
-| :--- | :--- | :--- | :--- |
-| **Primary (Point)** | Sun Yellow | `#ffce00` | 네이게이션 바 강조, 호버 상태, 포인트 버튼 |
-| **Primary Hover** | Warm Gold | `#e6b800` | 포인트 컬러의 호버/활성화 상태 색상 |
-| **Background (Main)** | Pure White | `#ffffff` | 블로그 기본 배경색 |
-| **Background (Alt)** | Off-White / Light Gray | `#f8fafc` | 프로필 카드, 에디터 영역, 태그 등 보조 배경색 |
-| **Text (Primary)** | Dark Slate | `#0f172a` | 메인 타이틀, 본문 텍스트 (높은 가독성) |
-| **Text (Secondary)** | Medium Gray | `#64748b` | 작성일, 카테고리, 설명글 등 보조 텍스트 |
-| **Border / Divider** | Cool Gray | `#e2e8f0` | 컴포넌트 경계선 및 분할선 |
+| 분류 | 역할 | 색상 이름 | Hex 코드 / 표기 | 설명 |
+| :--- | :--- | :--- | :--- | :--- |
+| **핵심 색상 1** | **Primary (Point)** | Sun Yellow | `#ffce00` | 네비게이션 바 로고 포인트, 글쓰기/발행 버튼 등 핵심 강조색 |
+| **핵심 색상 2** | **Background (Main)** | Pure White | `#ffffff` | 블로그 기본 배경색 |
+| **핵심 색상 3** | **Text (Primary)** | Dark Slate | `#0f172a` | 메인 타이틀, 본문 텍스트 등 가독성 중심 메인 텍스트 컬러 |
+| **핵심 색상 4** | **Border / Divider** | Cool Gray | `#e2e8f0` | 컴포넌트 경계선 및 분할선 기본 색상 |
+| *파생 색상 1* | *Background (Alt)* | Dark Slate (3% Opacity) | `rgba(15, 23, 42, 0.03)` | 프로필 카드, 에디터 영역, 태그 등 보조 배경색 |
+| *파생 색상 2* | *Text (Secondary)* | Dark Slate (60% Opacity) | `rgba(15, 23, 42, 0.6)` | 작성일, 카테고리, 설명글 등 보조 텍스트 컬러 |
+| *파생 색상 3* | *Primary Accent Light* | Sun Yellow (15% Opacity) | `rgba(255, 206, 0, 0.15)` | 카테고리 배지 배경 등 연한 하이라이트 |
 
 ## 3. 타이포그래피 (Typography)
 
