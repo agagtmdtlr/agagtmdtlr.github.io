@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노란귤 블로그</title>
+    <meta name="description" content="노란귤의 개발 블로그입니다.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 상단 네비게이션 바 -->
+    <nav class="navbar" id="blog-navbar">
+        <div class="nav-brand" id="nav-logo">
+            <span>노란귤</span><span class="brand-dot"></span>
+        </div>
+        
+        <div class="nav-actions">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="게시글 검색..." disabled>
+            </div>
+            <a href="#editor-section" class="btn-write">
+                <span>✍️</span> 글쓰기
+            </a>
+        </div>
+    </nav>
+
+    <!-- 레이아웃 컨테이너 -->
+    <div class="blog-layout">
+        
+        <!-- 좌측 사이드바: 프로필 및 카테고리 -->
+        <aside class="profile-sidebar">
+            <!-- 프로필 카드 -->
+            <div class="profile-card">
+                <div class="profile-image-container">
+                    <img src="profile_avatar.png" alt="Profile Avatar" class="profile-image" id="profile-img">
+                </div>
+                <h2 class="profile-name">노란귤</h2>
+                <p class="profile-bio">배우고 기록하는 것을 좋아하는 프론트엔드 개발자입니다. 기술 트렌드와 마크다운 노트들을 정리합니다.</p>
+                <div class="profile-socials">
+                    <a href="https://github.com" target="_blank" class="social-link" title="GitHub">🐙</a>
+                    <a href="mailto:contact@example.com" class="social-link" title="Email">✉️</a>
+                </div>
+            </div>
+
+            <!-- 카테고리 카드 -->
+            <div class="category-card">
+                <h3 class="card-title">Categories</h3>
+                <ul class="category-list">
+                    <li class="category-item active">
+                        <span>All</span>
+                        <span class="category-count">3</span>
+                    </li>
+                    <li class="category-item">
+                        <span>Development</span>
+                        <span class="category-count">2</span>
+                    </li>
+                    <li class="category-item">
+                        <span>General</span>
+                        <span class="category-count">1</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- 중앙 메인 콘텐츠 영역 -->
+        <main class="main-content" id="main-content">
+            
+            <!-- 1. 게시글 목록 섹션 -->
+            <section class="section-container">
+                <h2 class="section-title">게시글 목록</h2>
+                <div class="post-list">
+                    
+                    <article class="post-card">
+                        <div class="post-meta-top">
+                            <span class="post-category">Development</span>
+                            <span>2026-06-14</span>
+                        </div>
+                        <h3 class="post-title">CSS Grid와 Flexbox 완벽 가이드</h3>
+                        <p class="post-excerpt">모던 웹 레이아웃을 구성하기 위한 핵심 기술인 CSS Grid와 Flexbox의 사용법과 차이점, 그리고 실무 적용 노하우를 정리합니다.</p>
+                        <div class="post-meta-bottom">
+                            <div class="post-tags">
+                                <span class="post-tag">#CSS</span>
+                                <span class="post-tag">#Layout</span>
+                            </div>
+                            <span class="post-readmore">더 읽기 →</span>
+                        </div>
+                    </article>
+
+                    <article class="post-card">
+                        <div class="post-meta-top">
+                            <span class="post-category">Development</span>
+                            <span>2026-06-12</span>
+                        </div>
+                        <h3 class="post-title">깃허브 블로그 구축기</h3>
+                        <p class="post-excerpt">GitHub Pages와 간단한 HTML/CSS로 구축하는 나만의 커스텀 블로그 테마 제작 과정을 상세히 공유합니다.</p>
+                        <div class="post-meta-bottom">
+                            <div class="post-tags">
+                                <span class="post-tag">#GitHub</span>
+                                <span class="post-tag">#Blog</span>
+                            </div>
+                            <span class="post-readmore">더 읽기 →</span>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- 2. 게시글 상세 보기 섹션 -->
+            <section class="section-container" id="post-detail-section" style="margin-top: 50px;">
+                <h2 class="section-title">게시글 상세 보기</h2>
+                <div class="post-detail-container">
+                    <article class="post-article">
+                        <header class="detail-header">
+                            <span class="post-category">General</span>
+                            <h1 class="detail-title">노란귤 블로그에 오신 것을 환영합니다!</h1>
+                            <div class="detail-meta">
+                                <span>2026-06-14</span>
+                                <span class="meta-dot">•</span>
+                                <span>2 min read</span>
+                            </div>
+                        </header>
+                        <div class="post-content">
+                            <p>안녕하세요! 노란귤의 개인 블로그에 오신 것을 진심으로 환영합니다. 이 블로그는 정적 파일만을 사용하여 빠르고 직관적인 독서 환경을 제공하는 개발자용 블로그 공간입니다.</p>
+                            
+                            <h2 id="concept">1. 블로그 디자인 컨셉</h2>
+                            <p>요청된 가이드라인에 맞추어 제작된 이번 테마의 주요 컨셉은 다음과 같습니다.</p>
+                            <ul>
+                                <li><strong>화이트 배경:</strong> 텍스트 가독성을 가장 우선순위에 두고 깔끔하고 편안한 백그라운드를 제공합니다.</li>
+                                <li><strong>골드 포인트:</strong> 주조색 <code>#ffce00</code>을 활용해 브랜딩 가치와 모던한 액센트를 부여합니다.</li>
+                                <li><strong>3단 구조 레이아웃:</strong> 정보 구조를 한눈에 볼 수 있도록 균형감 있는 배치를 구현했습니다.</li>
+                            </ul>
+
+                            <h2 id="features">2. 주요 기능 및 레이아웃 구성</h2>
+                            <p>효율적인 웹 서핑을 위해 블로그 곳곳에 편리한 장치를 구성해 두었습니다.</p>
+                            <blockquote>
+                                좌측 사이드바에서는 닉네임과 함께 소개글, 그리고 카테고리가 항상 유지되며 우측 목차(TOC)를 통해 긴 글에서도 길을 잃지 않고 탐색할 수 있습니다.
+                            </blockquote>
+
+                            <h2 id="editor-guide">3. 게시글 작성 에디터 지원</h2>
+                            <p>아래 섹션에 준비된 에디터 폼을 통해 마크다운 문법으로 새로운 게시글 초안을 바로 작성할 수 있습니다.</p>
+                            <pre><code>// 노란귤 블로그 개발 정보
+const blogInfo = {
+    owner: "노란귤",
+    primaryColor: "#ffce00",
+    layout: "3-Column Grid"
+};
+console.log("Welcome to Yellow Tangerine Blog!");</code></pre>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- 3. 게시글 작성 섹션 -->
+            <section class="section-container" id="editor-section" style="margin-top: 50px;">
+                <h2 class="section-title">게시글 작성</h2>
+                <div class="editor-container">
+                    <input type="text" class="editor-title-input" placeholder="제목을 입력하세요..." value="나의 세 번째 블로그 작성글">
+                    
+                    <div class="editor-meta-grid">
+                        <div class="editor-field">
+                            <label>Category</label>
+                            <input type="text" class="editor-input" placeholder="예: Guide, General" value="General">
+                        </div>
+                        <div class="editor-field">
+                            <label>Tags (쉼표로 구분)</label>
+                            <input type="text" class="editor-input" placeholder="예: Markdown, CSS" value="Markdown, Study">
+                        </div>
+                    </div>
+
+                    <div class="editor-layout">
+                        <div class="editor-field">
+                            <label>Content (Markdown)</label>
+                            <textarea class="editor-textarea" placeholder="마크다운 문법으로 글을 작성해 주세요..."># 나의 세 번째 포스팅
+
+오늘 새로운 깃허브 블로그 디자인 레이아웃을 마쳤다.
+화이트 톤과 골드 컬러가 아주 마음에 든다.
+
+## 오늘 배운 점
+- 3단 그리드 시스템 구축하기
+- Sticky sidebar 설정하기
+- 반응형 웹 디자인 미디어 쿼리 다루기</textarea>
+                        </div>
+                    </div>
+
+                    <div class="editor-actions">
+                        <button class="btn-cancel">취소</button>
+                        <button class="btn-submit">발행하기</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 우측 사이드바: 목차(TOC) 및 보조 위젯 -->
+        <aside class="toc-sidebar">
+            <!-- 정적 목차 카드 (중앙 상세글의 h2 태그와 앵커 연결) -->
+            <div class="toc-card" id="toc-card">
+                <h3 class="toc-title">ON THIS PAGE</h3>
+                <ul class="toc-list">
+                    <li class="toc-item depth-2 active">
+                        <a href="#concept">1. 블로그 디자인 컨셉</a>
+                    </li>
+                    <li class="toc-item depth-2">
+                        <a href="#features">2. 주요 기능 및 레이아웃 구성</a>
+                    </li>
+                    <li class="toc-item depth-2">
+                        <a href="#editor-guide">3. 게시글 작성 에디터 지원</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 최신 게시글 요약 위젯 -->
+            <div class="widget-card">
+                <h3 class="card-title">Recent Posts</h3>
+                <ul class="widget-post-list">
+                    <li class="widget-post-item">
+                        <div class="widget-post-title">CSS Grid와 Flexbox 완벽 가이드</div>
+                        <div class="widget-post-date">2026-06-14</div>
+                    </li>
+                    <li class="widget-post-item">
+                        <div class="widget-post-title">깃허브 블로그 구축기</div>
+                        <div class="widget-post-date">2026-06-12</div>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+</body>
+</html>
