@@ -36,6 +36,11 @@ export default class BlogApp {
      * posts.json 파일 및 개별 마크다운 파일 로드
      */
     async loadPosts() {
+        if (window.location.protocol === 'file:') {
+            console.error("CORS 제한으로 인해 file:// 프로토콜에서는 데이터를 불러올 수 없습니다. 로컬 개발 서버(http://localhost:3000)를 통해 접속해주세요.");
+            alert("브라우저 보안 정책(CORS)으로 인해 로컬 파일(file://)로 직접 열었을 때는 게시글 목록을 불러올 수 없습니다.\n로컬 개발 서버(http://localhost:3000)를 통해 접속해 주세요.");
+            return;
+        }
         try {
             // posts.json에서 마크다운 파일 목록 조회
             const response = await fetch('./posts.json');
@@ -47,25 +52,16 @@ export default class BlogApp {
             const loadedPosts = [];
             for (const file of postFiles) {
                 try {
-                    const postRes = await fetch(`./_posts/${file}`);
+                    const htmlFile = file.replace('.md', '.html');
+                    const postRes = await fetch(`./_pages/${htmlFile}`);
                     if (!postRes.ok) {
-                        console.error(`포스트 파일을 읽을 수 없습니다: ${file}`);
+                        console.error(`포스트 파일을 읽을 수 없습니다: ${htmlFile}`);
                         continue;
                     }
-                    const mdText = await postRes.text();
-                    const parsed = this.parseFrontMatter(mdText);
+                    const htmlText = await postRes.text();
+                    const parsed = this.parsePostHtml(htmlText, htmlFile);
                     if (parsed) {
-                        loadedPosts.push({
-                            id: parsed.frontMatter.id,
-                            title: parsed.frontMatter.title,
-                            excerpt: parsed.frontMatter.excerpt,
-                            content: parsed.content,
-                            category: parsed.frontMatter.category,
-                            tags: parsed.frontMatter.tags || [],
-                            date: parsed.frontMatter.date,
-                            updated: parsed.frontMatter.updated || parsed.frontMatter.date,
-                            readtime: parsed.frontMatter.readtime || "2 min read"
-                        });
+                        loadedPosts.push(parsed);
                     }
                 } catch (err) {
                     console.error(`포스트 파일 처리 실패 (${file}):`, err);
@@ -75,6 +71,53 @@ export default class BlogApp {
         } catch (error) {
             console.error('포스트 데이터 로딩 실패:', error);
             this.posts = [];
+        }
+    }
+
+    /**
+     * HTML 파일에서 메타데이터 및 본문 추출
+     */
+    parsePostHtml(htmlText, filename) {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+
+            const title = doc.querySelector('.detail-title')?.textContent || '';
+            const category = doc.querySelector('.post-category')?.textContent || 'General';
+            
+            const metaSpans = doc.querySelectorAll('.detail-meta span');
+            const date = metaSpans[0]?.textContent || '';
+            const readtime = metaSpans[2]?.textContent || metaSpans[1]?.textContent || '2 min read';
+
+            const excerptMeta = doc.querySelector('meta[name="description"]');
+            const excerpt = excerptMeta ? excerptMeta.getAttribute('content') : '';
+
+            const idMeta = doc.querySelector('meta[name="post-id"]');
+            const id = idMeta ? parseInt(idMeta.getAttribute('content'), 10) : filename;
+
+            const tagsMeta = doc.querySelector('meta[name="tags"]');
+            const tags = tagsMeta && tagsMeta.getAttribute('content')
+                ? tagsMeta.getAttribute('content').split(',').map(t => t.trim()).filter(Boolean)
+                : [];
+
+            const contentEl = doc.querySelector('.post-content');
+            const content = contentEl ? contentEl.innerHTML : '';
+
+            return {
+                id,
+                title,
+                excerpt,
+                content,
+                category,
+                tags,
+                date,
+                updated: date,
+                readtime,
+                filename
+            };
+        } catch (e) {
+            console.error('HTML 파싱 에러:', e);
+            return null;
         }
     }
 
@@ -289,7 +332,9 @@ export default class BlogApp {
                 <div class="widget-post-title">${post.title}</div>
                 <div class="widget-post-date">${post.date}</div>
             `;
-            li.addEventListener("click", () => this.showPostDetail(post.id));
+            li.addEventListener("click", () => {
+                window.location.href = `./_pages/${post.filename}`;
+            });
             this.widgetRecentList.appendChild(li);
         });
     }
@@ -337,7 +382,9 @@ export default class BlogApp {
                     <span class="post-readmore">읽기 <span>→</span></span>
                 </div>
             `;
-            card.addEventListener("click", () => this.showPostDetail(post.id));
+            card.addEventListener("click", () => {
+                window.location.href = `./_pages/${post.filename}`;
+            });
             this.viewList.appendChild(card);
         });
     }
@@ -354,8 +401,8 @@ export default class BlogApp {
         this.detailDate.textContent = post.date;
         this.detailReadtime.textContent = post.readtime || "3 min read";
 
-        // 본문 마크다운 파싱 주입
-        this.detailContent.innerHTML = this.parseMarkdown(post.content);
+        // 본문 HTML 주입
+        this.detailContent.innerHTML = post.content;
 
         this.switchView("detail");
         this.generateTOC();

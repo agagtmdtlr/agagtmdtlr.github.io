@@ -150,6 +150,8 @@ function buildTemplate(postData, contentHtml, headings) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${postData.title} - 노란귤 블로그</title>
     <meta name="description" content="${postData.excerpt}">
+    <meta name="post-id" content="${postData.id}">
+    <meta name="tags" content="${postData.tags ? (Array.isArray(postData.tags) ? postData.tags.join(',') : postData.tags) : ''}">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
@@ -258,11 +260,8 @@ function buildTemplate(postData, contentHtml, headings) {
 `;
 }
 
-// 대상 마크다운 리스트
-const files = [
-    '2026-06-13-markdown-guide.md',
-    '2026-06-14-welcome.md'
-];
+// 대상 마크다운 리스트 (폴더 내 모든 마크다운 파일 자동 검색)
+const files = fs.readdirSync(POSTS_DIR).filter(file => file.endsWith('.md'));
 
 if (!fs.existsSync(PAGES_DIR)) {
     fs.mkdirSync(PAGES_DIR, { recursive: true });

@@ -127,9 +127,17 @@ const server = http.createServer((req, res) => {
     }
 
     // 일반 정적 파일 서빙
-    // / 경로 접속 시 SSG/index.html로 리다이렉트 또는 서빙
+    // /SSG 접근 시 후행 슬래시(/)가 없으면 리다이렉트하여 상대 경로 깨짐 방지
+    if (pathname === '/SSG') {
+        res.writeHead(301, { 'Location': '/SSG/' });
+        res.end();
+        return;
+    }
+
     let targetPath = pathname;
-    if (targetPath === '/' || targetPath === '/SSG' || targetPath === '/SSG/') {
+    if (targetPath === '/') {
+        targetPath = '/index.html';
+    } else if (targetPath === '/SSG/') {
         targetPath = '/SSG/index.html';
     }
 

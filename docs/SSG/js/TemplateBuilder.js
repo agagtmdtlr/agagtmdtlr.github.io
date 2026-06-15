@@ -40,6 +40,8 @@ export default class TemplateBuilder {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${postData.title} - 노란귤 블로그</title>
     <meta name="description" content="${postData.excerpt}">
+    <meta name="post-id" content="${postData.id}">
+    <meta name="tags" content="${postData.tags.join(',')}">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
